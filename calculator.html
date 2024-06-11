@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.js"></script>
+
+    <style>
+
+        input{
+           /* align-items: center;
+           justify-content: center; */
+            width:95%;
+            height:90%;
+            padding-top: 5px;
+            padding-bottom: 50px;
+        }
+        body{
+         
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+        table {
+           background-color: #867c7c;
+            /* display: flex; */
+            border: 1px solid rgb(7, 5, 5); /* Set a 1px solid black border for the table */
+            border-collapse: collapse; /* Collapse the borders between table cells */
+          
+        }
+        th {
+      
+            background-color: #f2f2f2; /* Light gray background color for table headers */
+            font-weight: bold; /* Make the text bold */
+        }
+
+        td {
+            border: 1px solid black; /* Set a 1px solid black border for table data cells */
+            padding: 8px; /* Add some padding within the table data cells */
+        }
+        button {
+            background-color: lightgreen;
+            color:black;
+            width: 100%;
+            height: 100%;
+            padding: 8px;
+            box-sizing: border-box; /* Ensure padding and border are included in the width and height */
+        }   
+        .memoryrow td{
+            width:20%;
+            padding: 8px;
+          
+            border:none;
+        }
+        .memorytable {
+            border:none;
+        }
+    </style>
+</head>
+<body>
+    
+    <table>
+        <tr>
+            <th colspan="4" id="heading"> Calculator </th>
+        </tr>
+        <tr >
+            <td colspan="4" > <input id="display" type="text"> </td>
+            
+        </tr>
+        <tr  >
+            <td colspan="4">
+                <table class="memorytable">
+                    <tr class="memoryrow">
+                        <td><button onclick="memoryclear()">MC</button></td>
+                        <td><button onclick="memoryretrieve()">MR</button></td>
+                        <td><button onclick="memoryadd_element()">M+</button></td>
+                        <td><button onclick="memoryremove_element()">M-</button></td>
+                        <td><button onclick="memoryoverride()">MS</button></td>
+                    </tr>
+               </table>
+        </td>
+            
+        </tr>
+        <tr>
+            <td><button onclick="clearElement()">CE</button></td>
+            <td><button onclick="clearinput()">C</button></td>
+            <td><button onclick="clearEntry()"><=</button></td>
+            <td><button>/</button></td>
+        </tr>
+        <tr>
+            <td><button onclick="input_display(7)">7</button></td>
+            <td><button onclick="input_display(8)">8</button></td>
+            <td><button onclick="input_display(9)">9</button></td>
+            <td><button onclick="input_display('*')">*</button></td>
+        </tr>
+        <tr>
+            <td><button onclick="input_display(4)">4</button></td>
+            <td><button onclick="input_display(5)">5</button></td>
+            <td><button onclick="input_display(6)">6</button></td>
+            <td><button onclick="input_display('-')">-</button></td>
+        </tr>
+        <tr>
+            <td><button onclick="input_display(1)">1</button></td>
+            <td><button onclick="input_display(2)">2</button></td>
+            <td><button onclick="input_display(3)">3</button></td>
+            <td><button onclick="input_display('+')">+</button></td>
+        </tr>
+        
+        <tr>
+            <td><button onclick="negate()" >+/-</button></td>
+            <td><button onclick="input_display(0)">0</button></td>
+            <td><button onclick="input_display('.')">.</button></td>
+            <td><button onclick="equate()">=</button></td>
+        </tr>
+        
+    </table>
+    <script>
+        function negate(){
+            document.getElementById('display').value=-(document.getElementById('display').value)
+        }   
+
+        function input_display(n){
+           document.getElementById('display').value+=n
+           console.log(`entered :${n}`)
+        }
+        function equate(){
+            let x = document.getElementById("display").value 
+            try{
+            var y = math.evaluate(x) 
+            }
+            catch{
+                alert("Syntax Error") //can do better bud
+               document.getElementById("display").value=""
+               
+            }
+            
+            document.getElementById("display").value = y
+        }
+        function clearinput(){
+            document.getElementById("display").value=""
+        }
+
+        function clearEntry() {
+    var display = document.getElementById("display");
+    var currentValue = display.value;
+    if (currentValue.length > 0) {
+        currentValue = currentValue.slice(0, -1);
+        display.value = currentValue;
+    }
+}
+
+function clearElement() {
+            var display = document.getElementById("display");
+            var currentValue = display.value;
+
+            // Find the position of the last operator (+, -, *, /)
+            var lastOperatorIndex = Math.max(
+                currentValue.lastIndexOf('+'),
+                currentValue.lastIndexOf('-'),
+                currentValue.lastIndexOf('*'),
+                currentValue.lastIndexOf('/')
+            );
+
+            // If an operator is found, slice the string up to that position
+            if (lastOperatorIndex !== -1) {
+                currentValue = currentValue.slice(0, lastOperatorIndex + 1);
+            } else {
+                // If no operator is found, clear the entire input
+                currentValue = "";
+            }
+
+            display.value = currentValue;
+        }
+
+        function memoryoverride(){
+            var display = document.getElementById("display").value;
+            localStorage.setItem('calculator_memory',display)
+            console.log("override")
+        }
+
+        function memoryadd_element(){ //toufiq mistake
+            var display = document.getElementById("display");
+            var currentValue = display.value;
+            var lastOperatorIndex = Math.max(
+                currentValue.lastIndexOf('+'),
+                currentValue.lastIndexOf('-'),
+                currentValue.lastIndexOf('*'),
+                currentValue.lastIndexOf('/')
+            );
+
+            // If an operator is found, slice the string up to that position
+            
+                currentValue = currentValue.slice( lastOperatorIndex+1 ,display.value.length+1);
+                console.log("here"+currentValue)
+         
+
+      
+
+            current_storage= localStorage.getItem('calculator_memory')
+            if(current_storage==undefined){
+                localStorage.setItem('calculator_memory',currentValue)
+            } 
+            else{
+            newvalue=Number(current_storage)+Number(currentValue)
+            localStorage.setItem('calculator_memory',newvalue)
+            }
+            // document.getElementById("display").value= localStorage.getItem('calculator_memory')
+        }
+
+        function memoryclear() {
+    localStorage.removeItem('calculator_memory');
+     }
+
+    function memoryretrieve(){
+        var current_value=localStorage.getItem('calculator_memory')
+        document.getElementById("display").value=current_value;
+     }
+     function memoryremove_element(){
+        current_value=localStorage.getItem('calculator_memory')
+        current_display=document.getElementById("display").value
+        
+        localStorage.setItem('calculator_memory',current_value-current_display)
+        document.getElementById("display").value=current_value-current_display;
+     }
+
+    </script>
+</body>
+</html>
